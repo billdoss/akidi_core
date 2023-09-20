@@ -22,4 +22,9 @@ namespace BackEndServices.Models
     {
         public dynamic accountInfos { get; set; }
     }
+
+    public class TransactionResponse : BasicResponse
+    {
+        public dynamic transactionInfos { get; set; }
+    }
 }

@@ -1,15 +1,8 @@
-﻿using BackEndServices.Services;
-using Microsoft.AspNetCore.Http;
+﻿using BackEndServices.Models;
+using BackEndServices.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Http;
 using static BackEndServices.Models.MobileMoney;
 using HttpGetAttribute = Microsoft.AspNetCore.Mvc.HttpGetAttribute;
 using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
@@ -20,12 +13,12 @@ namespace BackEndServices.Controllers
 
 
     [Route("[controller]")]
-    public class MomoController : ApiController
+    public class MomoController : ControllerBase
     {
         private readonly MomoService mobileMoneyService = new MomoService();
         [HttpPost]
         [Route("api/momo/transfer")]
-        public HttpResponseMessage MomoTransferPayOut(MobileMoneyPayload payload)
+        public TransactionResponse MomoTransferPayOut(MobileMoneyPayload payload)
         {
 
             if (!ModelState.IsValid)
@@ -33,18 +26,19 @@ namespace BackEndServices.Controllers
                 var errorList = (from item in ModelState.Values
                                  from error in item.Errors
                                  select error.ErrorMessage).ToArray();
-                return new HttpResponseMessage(HttpStatusCode.BadRequest) { RequestMessage = Request, ReasonPhrase = "Data missing" };
+                return new TransactionResponse() { code = 1010, transactionInfos = null, message = "Invalid Data" };
             }
 
             Utils.Utils.SaveLog("MomoController", "api/momo/transfer", JsonConvert.SerializeObject(payload));
             var momoPaymentResponse = mobileMoneyService.MobileMoneyPayOut(payload);
-            return  new HttpResponseMessage(momoPaymentResponse.code) { RequestMessage = Request, ReasonPhrase = JsonConvert.SerializeObject(momoPaymentResponse) };
+            return new TransactionResponse() { code = 1000, message = momoPaymentResponse.message, transactionInfos = momoPaymentResponse.returnObject };
+            
         }
 
 
         [HttpPost]
         [Route("api/momo/payment")]
-        public HttpResponseMessage MomoPayment(MomoPaymentPayload payload)
+        public TransactionResponse MomoPayment(MomoPaymentPayload payload)
         {
 
             if (!ModelState.IsValid)
@@ -52,12 +46,12 @@ namespace BackEndServices.Controllers
                 var errorList = (from item in ModelState.Values
                                  from error in item.Errors
                                  select error.ErrorMessage).ToArray();
-                return new HttpResponseMessage(HttpStatusCode.BadRequest) { RequestMessage = Request, ReasonPhrase = "Data missing" };
+                return new TransactionResponse() { code = 1010, transactionInfos = null, message = "Invalid Data" };
             }
 
             Utils.Utils.SaveLog("MomoController", "api/momo/payment", JsonConvert.SerializeObject(payload));
             var momoPaymentResponse = mobileMoneyService.StartPaymentProcess(payload);
-            return new HttpResponseMessage(momoPaymentResponse.code) { RequestMessage = Request, ReasonPhrase = JsonConvert.SerializeObject(momoPaymentResponse) };
+            return new TransactionResponse() { code = 1000, message = momoPaymentResponse.message, transactionInfos = momoPaymentResponse.returnObject };
         }
 
 
@@ -65,7 +59,7 @@ namespace BackEndServices.Controllers
 
         [HttpGet]
         [Route("api/momo/payment")]
-        public HttpResponseMessage FetchMomoPayment()
+        public TransactionResponse FetchMomoPayment()
         {
 
             if (!ModelState.IsValid)
@@ -73,12 +67,12 @@ namespace BackEndServices.Controllers
                 var errorList = (from item in ModelState.Values
                                  from error in item.Errors
                                  select error.ErrorMessage).ToArray();
-                return new HttpResponseMessage(HttpStatusCode.BadRequest) { RequestMessage = Request, ReasonPhrase = "Data missing" };
+                return new TransactionResponse() { code = 1010, transactionInfos = null, message = "Invalid Data" };
             }
 
             Utils.Utils.SaveLog("MomoController", "api/momo/payment","");
             var momoPaymentResponse = mobileMoneyService.GetMobileMoneyPayment();
-            return new HttpResponseMessage(momoPaymentResponse.code) { RequestMessage = Request, ReasonPhrase = JsonConvert.SerializeObject(momoPaymentResponse) };
+            return new TransactionResponse() { code = 1000, message = momoPaymentResponse.message, transactionInfos = momoPaymentResponse.returnObject };
         }
 
 
@@ -87,20 +81,20 @@ namespace BackEndServices.Controllers
 
         [HttpGet]
         [Route("api/momo/{trans_id}")]
-        public HttpResponseMessage MomoTransferByTransactionId(string trans_id)
+        public TransactionResponse MomoTransferByTransactionId(string trans_id)
         {
             if (!ModelState.IsValid)
             {
                 var errorList = (from item in ModelState.Values
                                  from error in item.Errors
                                  select error.ErrorMessage).ToArray();
-                return new HttpResponseMessage(HttpStatusCode.BadRequest) { RequestMessage = Request, ReasonPhrase = "Data missing" };
+                return new TransactionResponse() { code = 1010, transactionInfos = null, message = "Invalid Data" };
             }
 
             Utils.Utils.SaveLog("MomoController", "api/momo/{trans_id}", JsonConvert.SerializeObject(trans_id));
             var momoTransactionByIdResponce = mobileMoneyService.GetMobileMoneyTransactionById(trans_id);
 
-            return new HttpResponseMessage(momoTransactionByIdResponce.code) { RequestMessage = Request, ReasonPhrase = JsonConvert.SerializeObject(momoTransactionByIdResponce) };
+            return new TransactionResponse() { code = 1000, message = momoTransactionByIdResponce.message, transactionInfos = momoTransactionByIdResponce.returnObject };
 
         }
 
@@ -108,19 +102,19 @@ namespace BackEndServices.Controllers
 
         [HttpGet]
         [Route("api/momo")]
-        public HttpResponseMessage MomoTransferByTransactions()
+        public TransactionResponse MomoTransferByTransactions()
         {
             if (!ModelState.IsValid)
             {
                 var errorList = (from item in ModelState.Values
                                  from error in item.Errors
                                  select error.ErrorMessage).ToArray();
-                return new HttpResponseMessage(HttpStatusCode.BadRequest) { RequestMessage = Request, ReasonPhrase = "Data missing" };
+                return new TransactionResponse() { code = 1010, transactionInfos = null, message = "Invalid Data" };
             }
             Utils.Utils.SaveLog("MomoController", "api/momo","");
             var momoTransactionByIdResponce = mobileMoneyService.GetMobileMoneyTransactions();
 
-            return new HttpResponseMessage(momoTransactionByIdResponce.code) { RequestMessage = Request, ReasonPhrase = JsonConvert.SerializeObject(momoTransactionByIdResponce) };
+            return new TransactionResponse() { code = 1000, message = momoTransactionByIdResponce.message, transactionInfos = momoTransactionByIdResponce.returnObject };
 
         }
     }
