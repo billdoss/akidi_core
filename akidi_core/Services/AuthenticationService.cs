@@ -283,10 +283,11 @@ namespace BackEndServices.Services
         {
             UserAccount userAccount = new UserAccount()
             {
+                customerName = customer.customerName,
                 userId = customer.userId,
                 accountType = "WALLET",
                 accountProvider = "AKIDI",
-                customerBankCode = null,
+                customerBankCode = customer.customerBankCode,
                 accountNumber = customer.customerPhone,
                 status = "ACTIVATED",
                 bankName = null,

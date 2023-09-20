@@ -476,17 +476,14 @@ namespace BackEndServices.Services
             string query = null;
             if (person.userType == "customer")
             {
-                query = $"INSERT INTO customers (customerName,customerPhone,customerEmail,customerBankCode,status,tryCount,deviceId,datecreated,lastLogin,userName,password,bankName) VALUES (@customerName,@customerPhone,@customerEmail,@customerBankCode,@status,@tryCount,@deviceId,@datecreated,@lastLogin,@userName,@password,@bankName)";
+                query = $"INSERT INTO customers (customerName,customerBankCode,status,tryCount,datecreated,lastLogin,userName,password,bankName) VALUES (@customerName,@customerBankCode,@status,@tryCount,@datecreated,@lastLogin,@userName,@password,@bankName)";
                 if (databaseConnector.OpenConnection())
                 {
                     MySqlCommand cmd = new MySqlCommand(query, databaseConnector.connection);
                     cmd.Parameters.AddWithValue("@customerName", person.customerName);
-                    cmd.Parameters.AddWithValue("@customerPhone", person.customerPhone);
-                    cmd.Parameters.AddWithValue("@customerEmail", person.customerEmail);
                     cmd.Parameters.AddWithValue("@customerBankCode", person.customerBankCode);
                     cmd.Parameters.AddWithValue("@status", "1");
                     cmd.Parameters.AddWithValue("@tryCount", "0");
-                    cmd.Parameters.AddWithValue("@deviceId", person.deviceId);
                     cmd.Parameters.AddWithValue("@datecreated", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));//YYYY - MM - DD HH: MM: SS
                     cmd.Parameters.AddWithValue("@lastLogin", null);
                     cmd.Parameters.AddWithValue("@userName", person.userName);
@@ -507,17 +504,14 @@ namespace BackEndServices.Services
             }
             else if (person.userType == "merchant")
             {
-                query = $"INSERT INTO merchant (customerName,customerPhone,customerEmail,customerBankCode,status,tryCount,deviceId,datecreated,lastLogin,userName,password) VALUES (@customerName,@customerPhone,@customerEmail,@customerBankCode,@status,@tryCount,@deviceId,@datecreated,@lastLogin,@userName,@password)";
+                query = $"INSERT INTO merchant (customerName,customerBankCode,status,tryCount,datecreated,lastLogin,userName,password) VALUES (@customerName,@customerBankCode,@status,@tryCount,@datecreated,@lastLogin,@userName,@password)";
                 if (databaseConnector.OpenConnection())
                 {
                     MySqlCommand cmd = new MySqlCommand(query, databaseConnector.connection);
                     cmd.Parameters.AddWithValue("@customerName", person.customerName);
-                    cmd.Parameters.AddWithValue("@customerPhone", person.customerPhone);
-                    cmd.Parameters.AddWithValue("@customerEmail", person.customerEmail);
                     cmd.Parameters.AddWithValue("@customerBankCode", person.customerBankCode);
                     cmd.Parameters.AddWithValue("@status", person.status);
                     cmd.Parameters.AddWithValue("@tryCount", person.tryCount);
-                    cmd.Parameters.AddWithValue("@deviceId", person.deviceId);
                     cmd.Parameters.AddWithValue("@datecreated", person.datecreated);
                     cmd.Parameters.AddWithValue("@lastLogin", person.lastLogin);
                     cmd.Parameters.AddWithValue("@userName", person.userName);
@@ -537,13 +531,110 @@ namespace BackEndServices.Services
             }
             else if (person.userType == "agent")
             {
-                query = $"INSERT INTO agents (agentName,agentrPhone,agentEmail,agentrBankCode,status,tryCount,deviceId,datecreated,lastLogin,userName,password,bankName) VALUES (@agentName,@agentPhone,@agentEmail,@agentBankCode,@status,@tryCount,@deviceId,@datecreated,@lastLogin,@userName,@password,@bankName)";
+                query = $"INSERT INTO agents (agentName,agentrBankCode,status,tryCount,datecreated,lastLogin,userName,password,bankName) VALUES (@agentName,@agentBankCode,@status,@tryCount,@datecreated,@lastLogin,@userName,@password,@bankName)";
                 if (databaseConnector.OpenConnection())
                 {
                     MySqlCommand cmd = new MySqlCommand(query, databaseConnector.connection);
                     cmd.Parameters.AddWithValue("@agentName", person.agentrName);
-                    cmd.Parameters.AddWithValue("@agentPhone", person.agentPhone);
-                    cmd.Parameters.AddWithValue("@agentEmail", person.agentEmail);
+                    cmd.Parameters.AddWithValue("@agentBankCode", person.agentBankCode);
+                    cmd.Parameters.AddWithValue("@status", person.status);
+                    cmd.Parameters.AddWithValue("@tryCount", person.tryCount);
+                    cmd.Parameters.AddWithValue("@deviceId", person.deviceId);
+                    cmd.Parameters.AddWithValue("@datecreated", person.datecreated);
+                    cmd.Parameters.AddWithValue("@lastLogin", person.lastLogin);
+                    cmd.Parameters.AddWithValue("@userName", person.userName);
+                    cmd.Parameters.AddWithValue("@password", person.password);
+                    cmd.Parameters.AddWithValue("@bankName", person.bankName);
+
+
+                    try
+                    {
+                        rowsAffected = cmd.ExecuteNonQuery();
+
+                    }
+                    catch (MySqlException ex)
+                    {
+                        Console.WriteLine("Error occured during insertion : " + ex.Message);
+                    }
+                }
+
+            }
+
+
+
+            databaseConnector.CloseConnection();
+
+            return rowsAffected;
+
+
+        }
+
+        public int Save_(dynamic person)
+        {
+            int rowsAffected = 0;
+            string query = null;
+            if (person.userType == "customer")
+            {
+                query = $"INSERT INTO customers (customerName,customerBankCode,status,tryCount,datecreated,lastLogin,userName,password,bankName) VALUES (@customerName,@customerBankCode,@status,@tryCount,@datecreated,@lastLogin,@userName,@password,@bankName)";
+                if (databaseConnector.OpenConnection())
+                {
+                    MySqlCommand cmd = new MySqlCommand(query, databaseConnector.connection);
+                    cmd.Parameters.AddWithValue("@customerName", person.customerName);
+                    cmd.Parameters.AddWithValue("@customerBankCode", person.customerBankCode);
+                    cmd.Parameters.AddWithValue("@status", "1");
+                    cmd.Parameters.AddWithValue("@tryCount", "0");
+                    cmd.Parameters.AddWithValue("@datecreated", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));//YYYY - MM - DD HH: MM: SS
+                    cmd.Parameters.AddWithValue("@lastLogin", null);
+                    cmd.Parameters.AddWithValue("@userName", person.userName);
+                    cmd.Parameters.AddWithValue("@password", person.password);
+                    cmd.Parameters.AddWithValue("@bankName", person.bankName);
+
+
+                    try
+                    {
+                        rowsAffected = cmd.ExecuteNonQuery();
+
+                    }
+                    catch (MySqlException ex)
+                    {
+                        Console.WriteLine("Error occured during insertion : " + ex.Message);
+                    }
+                }
+            }
+            else if (person.userType == "merchant")
+            {
+                query = $"INSERT INTO merchant (customerName,customerBankCode,status,tryCount,datecreated,lastLogin,userName,password) VALUES (@customerName,@customerBankCode,@status,@tryCount,@datecreated,@lastLogin,@userName,@password)";
+                if (databaseConnector.OpenConnection())
+                {
+                    MySqlCommand cmd = new MySqlCommand(query, databaseConnector.connection);
+                    cmd.Parameters.AddWithValue("@customerName", person.customerName);
+                    cmd.Parameters.AddWithValue("@customerBankCode", person.customerBankCode);
+                    cmd.Parameters.AddWithValue("@status", person.status);
+                    cmd.Parameters.AddWithValue("@tryCount", person.tryCount);
+                    cmd.Parameters.AddWithValue("@datecreated", person.datecreated);
+                    cmd.Parameters.AddWithValue("@lastLogin", person.lastLogin);
+                    cmd.Parameters.AddWithValue("@userName", person.userName);
+                    cmd.Parameters.AddWithValue("@password", person.password);
+
+
+                    try
+                    {
+                        rowsAffected = cmd.ExecuteNonQuery();
+
+                    }
+                    catch (MySqlException ex)
+                    {
+                        Console.WriteLine("Error occured during insertion : " + ex.Message);
+                    }
+                }
+            }
+            else if (person.userType == "agent")
+            {
+                query = $"INSERT INTO agents (agentName,agentrBankCode,status,tryCount,datecreated,lastLogin,userName,password,bankName) VALUES (@agentName,@agentBankCode,@status,@tryCount,@datecreated,@lastLogin,@userName,@password,@bankName)";
+                if (databaseConnector.OpenConnection())
+                {
+                    MySqlCommand cmd = new MySqlCommand(query, databaseConnector.connection);
+                    cmd.Parameters.AddWithValue("@agentName", person.agentrName);
                     cmd.Parameters.AddWithValue("@agentBankCode", person.agentBankCode);
                     cmd.Parameters.AddWithValue("@status", person.status);
                     cmd.Parameters.AddWithValue("@tryCount", person.tryCount);
@@ -582,57 +673,62 @@ namespace BackEndServices.Services
 
         public ReturnMessage getUserAccount(AccountFilter accountFilter)
         {
-            string connectionString = databaseConnector.connectionString;
+            //string connectionString = databaseConnector.connectionString;
             ReturnMessage message = new ReturnMessage();
             List<UserAccount> accounts = new List<UserAccount>();
 
             try
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                using (MySqlConnection connection = new MySqlConnection(databaseConnector.connectionString))
                 {
-                    connection.Open();
-                    string query = null;
-                    LogHandler.WriteLog("CALLING SERVICE --> getUserAccount \n " + JsonConvert.SerializeObject(accountFilter), "ACCOUNT_SERVICE", false, "ACCOUNT_SERVICE");
-                    query = "SELECT * FROM customer_account where userId = '" + accountFilter.userId + "';";
-
-
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    
+                    if (databaseConnector.OpenConnection())
                     {
-                        using (MySqlDataReader reader = command.ExecuteReader())
+                        string query = null;
+                        LogHandler.WriteLog("CALLING SERVICE --> getUserAccount \n " + JsonConvert.SerializeObject(accountFilter), "ACCOUNT_SERVICE", false, "ACCOUNT_SERVICE");
+                        query = "SELECT * FROM customer_account where userId = '" + accountFilter.userId + "';";
+
+
+                        using (MySqlCommand command = new MySqlCommand(query, databaseConnector.connection))
                         {
-                            if (reader.HasRows)
+                            using (MySqlDataReader reader = command.ExecuteReader())
                             {
-
-                                while (reader.Read())
+                                if (reader.HasRows)
                                 {
-                                    UserAccount userAccount = new UserAccount();
 
-                                    userAccount = new UserAccount()
+                                    while (reader.Read())
                                     {
-                                        userId = int.Parse( reader["userId"].ToString()),
-                                        accountType = reader["accountType"].ToString(),
-                                        accountProvider = reader["accountProvider"].ToString(),
-                                        customerName = reader["customerName"].ToString(),
-                                        customerBankCode = reader["customerBankCode"].ToString(),
-                                        accountNumber = reader["accountNumber"].ToString(),
-                                        bankName = reader["bankName"].ToString(),
-                                        status = reader["status"].ToString(),
-                                        dateCreated = reader["datecreated"].ToString(),
-                                        dateUpdated = reader["dateUpdated"].ToString()
+                                        UserAccount userAccount = new UserAccount();
 
-                                    };
-                                    
+                                        userAccount = new UserAccount()
+                                        {
+                                            userId = int.Parse(reader["userId"].ToString()),
+                                            accountType = reader["accountType"].ToString(),
+                                            accountProvider = reader["accountProvider"].ToString(),
+                                            customerName = reader["customerName"].ToString(),
+                                            customerBankCode = reader["customerBankCode"].ToString(),
+                                            accountNumber = reader["accountNumber"].ToString(),
+                                            bankName = reader["bankName"].ToString(),
+                                            status = reader["status"].ToString(),
+                                            dateCreated = reader["datecreated"].ToString(),
+                                            dateUpdated = reader["dateUpdated"].ToString()
 
-                                    accounts.Add(userAccount);
+                                        };
 
+
+                                        accounts.Add(userAccount);
+
+                                    }
                                 }
                             }
                         }
+                        LogHandler.WriteLog("CALLING SERVICE --> GetUserAccount \n RESPONSE--> GetUserAccount \t" + JsonConvert.SerializeObject(accounts), "ACCOUNT_SERVICE", false, "ACCOUNT_SERVICE");
+                        message.returnObject = accounts;
+                        message.code = System.Net.HttpStatusCode.OK;
                     }
+                    
                 }
-                LogHandler.WriteLog("CALLING SERVICE --> GetUserAccount \n RESPONSE--> GetUserAccount \t" + JsonConvert.SerializeObject(accounts), "ACCOUNT_SERVICE", false, "ACCOUNT_SERVICE");
-                message.returnObject = accounts;
-                message.code = System.Net.HttpStatusCode.OK;
+                
 
             }
             catch (Exception ex)

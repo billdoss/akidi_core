@@ -23,8 +23,9 @@ namespace BackEndServices.Services
         {
             try
             {
-                string path = Path.Combine("logs", directory ?? "", fileName ?? "", DateTime.Today.ToString("dd-MM-yy") + ".txt");
-                string filePath = Path.Combine(_hostingEnvironment.ContentRootPath, path);
+
+                string path = Path.Combine("logs", DateTime.Today.ToString("dd-MM-yy") + ".txt");
+                string filePath = path;// Path.Combine(_hostingEnvironment.ContentRootPath, path);
 
                 if (!File.Exists(filePath))
                 {
@@ -43,7 +44,7 @@ namespace BackEndServices.Services
                         w.WriteLine("\r\n::::::::::::::::::::::::::::::::: LOG ENTRY :::::::::::::::::::::::::::::::::");
                         w.WriteLine("{0}", DateTime.Now.ToString("dd/MM/yyyy H:m:s"));
                         w.WriteLine("LOG DETAILS");
-                        w.WriteLine("\t|==> LOG FROM : " + _httpContextAccessor.HttpContext.Request.Path);
+                        w.WriteLine("\t|==> LOG FROM : " + filePath);
                         w.WriteLine(logMessage);
                     }
                 }

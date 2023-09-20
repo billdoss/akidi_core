@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\AccountController.cs" />
     <Compile Remove="Controllers\CodeTransactionController.cs" />
     <Compile Remove="Controllers\HomeController.cs" />
     <Compile Remove="Controllers\MomoController.cs" />
@@ -20,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="logs\ACCOUNT_SERVICE\ACCOUNT_SERVICE\" />
     <Folder Include="Models\" />
     <Folder Include="Services\" />
   </ItemGroup>
